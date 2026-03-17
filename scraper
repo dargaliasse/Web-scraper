@@ -1,0 +1,16 @@
+import requests
+
+
+def web_scraper(url):
+    headers = {'Accept': 'application/json'}
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    if response.status_code == 200 and "joke" in data:
+        print(data["joke"])
+    else:
+        print("Invalid resource!")
+
+
+user_url = input("Input the URL: ")
+web_scraper(user_url)
