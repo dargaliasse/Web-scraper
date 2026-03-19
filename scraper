@@ -4,41 +4,17 @@ import requests
 
 def scraper(url):
     headers = {'Accept-Language': 'en-US,en;q=0.5'}
+    page_html = requests.get(url, headers=headers)
 
-    if "nature.com" not in url or "/articles/" not in url:
-        print("Invalid page!")
-        return
+    if page_html.status_code == 200:
+        page_content = page_html.content
 
-    try:
-        response = requests.get(url, headers=headers)
+        with open("source.html", "wb") as file:
+            file.write(page_content)
 
-        if response.status_code != 200:
-            print("Invalid page!")
-            return
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        title_tag = soup.find("title")
-        meta_tag = soup.find("meta", {"name": "description"})
-
-        if not title_tag or not meta_tag:
-            print("Invalid page!")
-            return
-
-        title = title_tag.text.strip()
-        description = meta_tag.get("content", "").strip()
-
-        if not description:
-            print("Invalid page!")
-            return
-
-        print({
-            "title": title,
-            "description": description
-        })
-
-    except requests.exceptions.RequestException:
-        print("Invalid page!")
+        print("Content saved.")
+    else:
+        print(f"The URL returned{page_html.status_code}")
 
 
 user_url = input()
